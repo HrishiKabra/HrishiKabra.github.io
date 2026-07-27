@@ -97,7 +97,7 @@ HK.reveal = (targets, vars = {}) => {
 
 /* ---------- loader + hero settle-in ---------- */
 const WORDS = ['Hello', 'नमस्ते', 'Bonjour', 'Hola', 'こんにちは', 'Ciao'];
-const WORD_MS = 420;  /* dwell per greeting — whole intro ≈ 6×WORD_MS + .7s slide */
+const WORD_MS = 300;  /* dwell per greeting — whole intro ≈ 6×WORD_MS + .7s slide */
 function heroIn(withDelay) {
   if (reduce) return;
   const d = withDelay ? 0 : .15;
