@@ -17,6 +17,30 @@
 <meta name="theme-color" content="#1A1A14" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script>
+/* Runs before the first paint, so the theme and the loader are already correct on frame 1.
+   Doing this in main.js meant the page painted first and the loader slammed over it. */
+(function () {
+  var d = document.documentElement;
+  try {
+    d.dataset.theme = localStorage.getItem('hk-theme') ||
+      (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  } catch (e) { d.dataset.theme = 'light'; }
+
+  try { if (matchMedia('(prefers-reduced-motion: reduce)').matches) return; } catch (e) {}
+
+  d.classList.add('js');                          /* hero starts hidden, no pre-animation flash */
+  try {
+    if (!sessionStorage.getItem('hk-loader')) {
+      sessionStorage.setItem('hk-loader', '1');
+      d.classList.add('loading');                 /* loader covers the page from frame 1 */
+    }
+  } catch (e) {}
+
+  /* failsafe: if the GSAP CDN or main.js ever fails, never leave the site covered or hidden */
+  setTimeout(function () { d.classList.remove('loading'); d.classList.remove('js'); }, 6000);
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Instrument+Serif:ital@0;1&family=Archivo:wght@100..900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">

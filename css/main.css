@@ -40,7 +40,10 @@ html[data-theme="dark"] #grain{display:none}
 
 /* ============ loader ============ */
 #loader{position:fixed;inset:0;background:var(--bg);z-index:300;display:none;align-items:center;justify-content:center;color:var(--ink)}
-#loader.run{display:flex}
+html.loading #loader{display:flex}
+/* pre-paint states, set by the inline <head> script (GSAP inline styles override these once it runs) */
+html.js #hero h1 .line>span{transform:translateY(110%)}
+html.js #hero .intro,html.js #hero .ctas,html.js .tiltcard{opacity:0}
 #loader .word{font-family:'Fraunces',serif;font-size:clamp(34px,5vw,58px);font-weight:340;display:flex;align-items:center;gap:18px}
 #loader .word::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--accent);flex:none}
 

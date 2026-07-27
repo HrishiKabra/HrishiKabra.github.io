@@ -36,7 +36,8 @@ HK.toggleTheme = ev => {
   vt.finished.finally(() => root.classList.remove('vt-circle'));
   return next;
 };
-applyTheme(localStorage.getItem('hk-theme') ||
+/* the inline <head> script already set this pre-paint; re-apply to persist + refresh triggers */
+applyTheme(root.dataset.theme || localStorage.getItem('hk-theme') ||
   (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
 ['themebtn', 'themebtn-m'].forEach(id => {
   const b = document.getElementById(id);
@@ -96,6 +97,7 @@ HK.reveal = (targets, vars = {}) => {
 
 /* ---------- loader + hero settle-in ---------- */
 const WORDS = ['Hello', 'नमस्ते', 'Bonjour', 'Hola', 'こんにちは', 'Ciao'];
+const WORD_MS = 420;  /* dwell per greeting — whole intro ≈ 6×WORD_MS + .7s slide */
 function heroIn(withDelay) {
   if (reduce) return;
   const d = withDelay ? 0 : .15;
@@ -107,11 +109,9 @@ function heroIn(withDelay) {
   gsap.to('.tiltcard', { opacity: 1, duration: .9, delay: d + .35 });
 }
 (function boot() {
-  const played = sessionStorage.getItem('hk-loader');
-  if (reduce || played) { heroIn(false); return; }
-  sessionStorage.setItem('hk-loader', '1');
+  /* whether the loader runs was decided pre-paint by the inline <head> script */
+  if (reduce || !root.classList.contains('loading')) { heroIn(false); return; }
   const L = $('#loader'), W = $('#lw');
-  L.classList.add('run');
   gsap.set('#hero h1 .line>span', { y: '110%' });
   gsap.set('#hero .intro, #hero .ctas, .tiltcard', { opacity: 0 });
   let i = 0;
@@ -121,10 +121,10 @@ function heroIn(withDelay) {
       clearInterval(iv);
       gsap.to(L, {
         yPercent: -100, duration: .7, ease: 'power3.inOut',
-        onComplete: () => { L.classList.remove('run'); L.style.transform = ''; heroIn(true); },
+        onComplete: () => { root.classList.remove('loading'); L.style.transform = ''; heroIn(true); },
       });
     } else W.textContent = WORDS[i];
-  }, 220);
+  }, WORD_MS);
 })();
 
 /* ---------- hero photo: sits beside the name on phones, beside the column on desktop ---------- */
